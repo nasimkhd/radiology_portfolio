@@ -73,7 +73,7 @@ export function MobileNav({
         className="absolute inset-0 bg-navy/30 backdrop-blur-sm"
         onClick={() => setOpen(false)}
       />
-      <div className="absolute left-0 top-0 flex h-full w-64 max-w-[85%] flex-col bg-card shadow-xl">
+      <div className="absolute right-0 top-0 flex h-full w-64 max-w-[85%] flex-col bg-card shadow-xl">
         <div className="flex items-center justify-between border-b border-border px-4 py-5">
           <Logo size="compact" />
           <button
