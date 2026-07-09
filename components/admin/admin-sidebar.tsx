@@ -93,7 +93,7 @@ export function AdminSidebar({
     <>
       {/* Mobile top bar */}
       <div className="flex items-center justify-between border-b border-border bg-card px-4 py-3 lg:hidden">
-        <Logo />
+        <Logo size="compact" />
         <button
           type="button"
           onClick={() => setOpen(true)}
@@ -106,8 +106,8 @@ export function AdminSidebar({
 
       {/* Desktop sidebar */}
       <aside className="hidden w-64 shrink-0 flex-col border-r border-border bg-card lg:flex">
-        <div className="p-4">
-          <Logo />
+        <div className="border-b border-border px-4 py-5">
+          <Logo size="compact" />
         </div>
         {nav}
         {account}
@@ -121,8 +121,8 @@ export function AdminSidebar({
             onClick={() => setOpen(false)}
           />
           <div className="absolute left-0 top-0 flex h-full w-64 flex-col bg-card shadow-xl">
-            <div className="flex items-center justify-between p-4">
-              <Logo />
+            <div className="flex items-center justify-between border-b border-border px-4 py-5">
+              <Logo size="compact" />
               <button
                 type="button"
                 onClick={() => setOpen(false)}

@@ -20,7 +20,7 @@ export async function SiteHeader() {
 
   return (
     <header className="sticky top-0 z-40 border-b border-border bg-card/85 backdrop-blur supports-[backdrop-filter]:bg-card/70">
-      <div className="mx-auto flex h-16 max-w-6xl items-center justify-between gap-4 px-4 sm:px-6">
+      <div className="mx-auto flex h-[4.75rem] max-w-6xl items-center justify-between gap-4 px-4 sm:px-6">
         <Logo />
 
         <nav className="hidden items-center gap-1 md:flex">
@@ -28,7 +28,7 @@ export async function SiteHeader() {
             <Link
               key={link.href}
               href={link.href}
-              className="rounded-lg px-3 py-2 text-sm font-medium text-foreground/80 transition-colors hover:bg-secondary hover:text-navy"
+              className="rounded-lg px-3 py-2 text-base font-medium text-foreground/80 transition-colors hover:bg-secondary hover:text-navy"
             >
               {link.label}
             </Link>
@@ -55,13 +55,13 @@ export async function SiteHeader() {
             <div className="hidden items-center gap-2 md:flex">
               <Link
                 href="/sign-in"
-                className={buttonVariants({ variant: "ghost", size: "sm" })}
+                className={buttonVariants({ variant: "ghost", className: "text-base" })}
               >
                 Sign In
               </Link>
               <Link
                 href="/sign-up"
-                className={buttonVariants({ variant: "primary", size: "sm" })}
+                className={buttonVariants({ variant: "primary", className: "text-base" })}
               >
                 <CircleUserRound className="size-4" />
                 Request Access
