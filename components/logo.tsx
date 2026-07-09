@@ -21,12 +21,12 @@ export function Logo({
       <Image
         src="/radio-from-scratch-logo.png"
         alt="Radio From Scratch"
-        width={140}
-        height={100}
+        width={580}
+        height={373}
         priority
         className={cn(
-          "w-auto transition-opacity group-hover:opacity-90",
-          size === "compact" ? "h-10" : "h-14"
+          "h-auto transition-opacity group-hover:opacity-90",
+          size === "compact" ? "w-[110px]" : "w-[140px]"
         )}
       />
     </Link>
