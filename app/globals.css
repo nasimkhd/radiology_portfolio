@@ -1,0 +1,105 @@
+@import "tailwindcss";
+@plugin "@tailwindcss/typography";
+
+/*
+  Radio From Scratch design tokens.
+  Calm, credible medical-education palette: light gray canvas, deep navy text,
+  teal/petrol primary accent. Subtle borders instead of heavy shadows.
+*/
+
+:root {
+  --background: #f7f9fb;
+  --foreground: #0f2137;
+
+  --card: #ffffff;
+  --card-foreground: #0f2137;
+
+  --popover: #ffffff;
+  --popover-foreground: #0f2137;
+
+  /* Petrol teal primary (matches CTA buttons in the mockups) */
+  --primary: #0d6a86;
+  --primary-foreground: #ffffff;
+
+  /* Deep navy used for the sign-in CTA and headings */
+  --navy: #0f2d47;
+  --navy-foreground: #ffffff;
+
+  --secondary: #eef4f7;
+  --secondary-foreground: #0f2137;
+
+  --muted: #eef2f6;
+  --muted-foreground: #5a6b7b;
+
+  --accent: #e6f2f5;
+  --accent-foreground: #0d5163;
+
+  /* Members badge (emerald/teal) */
+  --members: #0f7a5a;
+  --members-foreground: #ffffff;
+
+  --destructive: #c1352b;
+  --destructive-foreground: #ffffff;
+
+  --success: #0f7a5a;
+  --warning: #b7791f;
+
+  --border: #dbe4ea;
+  --input: #d3dee6;
+  --ring: #0d6a86;
+
+  --radius: 0.75rem;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-navy: var(--navy);
+  --color-navy-foreground: var(--navy-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-members: var(--members);
+  --color-members-foreground: var(--members-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-success: var(--success);
+  --color-warning: var(--warning);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+
+  --font-sans: var(--font-sans), ui-sans-serif, system-ui, sans-serif;
+  --font-serif: var(--font-serif), ui-serif, Georgia, Cambria, "Times New Roman", serif;
+
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+}
+
+* {
+  border-color: var(--border);
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-sans), ui-sans-serif, system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Consistent focus ring for keyboard users */
+:focus-visible {
+  outline: 2px solid var(--ring);
+  outline-offset: 2px;
+}
