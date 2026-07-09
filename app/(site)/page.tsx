@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 import {
   PlayCircle,
@@ -66,8 +67,15 @@ export default async function HomePage() {
 
           {/* Hero visual */}
           <div className="rounded-2xl border border-border bg-card p-3 shadow-sm">
-            <div className="relative aspect-[16/10] overflow-hidden rounded-xl bg-navy">
-              <RadiographBackdrop />
+            <div className="relative aspect-[16/10] overflow-hidden rounded-xl bg-black">
+              <Image
+                src="/chest-radiology.jpeg"
+                alt="Chest radiograph"
+                width={570}
+                height={320}
+                priority
+                className="h-full w-full object-cover object-center"
+              />
               <div className="absolute left-3 top-3">
                 <Badge variant="preview" className="bg-card/90 backdrop-blur">
                   <Eye className="size-3" />
@@ -209,30 +217,5 @@ function Feature({
         {body}
       </p>
     </div>
-  );
-}
-
-/** Decorative radiograph-style backdrop for the hero (no external asset). */
-function RadiographBackdrop() {
-  return (
-    <svg
-      className="absolute inset-0 h-full w-full"
-      viewBox="0 0 320 200"
-      preserveAspectRatio="xMidYMid slice"
-      aria-hidden="true"
-    >
-      <rect width="320" height="200" fill="#0b2136" />
-      <g stroke="#8fd0e3" strokeOpacity="0.35" fill="none" strokeWidth="1.5">
-        <path d="M160 30c-30 0-40 20-52 40-10 16-24 22-24 50 0 22 18 40 40 40h72c22 0 40-18 40-40 0-28-14-34-24-50-12-20-22-40-52-40z" />
-        <path d="M160 40v130" />
-        <path d="M120 70c14 10 26 10 40 10s26 0 40-10" />
-        <path d="M112 96c16 12 32 12 48 12s32 0 48-12" />
-        <path d="M108 124c18 12 34 12 52 12s34 0 52-12" />
-      </g>
-      <g fill="#8fd0e3" fillOpacity="0.12">
-        <circle cx="120" cy="120" r="26" />
-        <circle cx="200" cy="120" r="26" />
-      </g>
-    </svg>
   );
 }
