@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import { useState } from "react";
+import { isValidImageSrc } from "@/lib/youtube";
 
 /**
  * Thumbnail with graceful fallback: YouTube-generated images may 404 (e.g.
@@ -15,7 +16,10 @@ export function VideoThumbnail({
   alt: string;
 }) {
   const [errored, setErrored] = useState(false);
-  const resolved = errored ? "/placeholder-thumbnail.svg" : src;
+  const resolved =
+    errored || !src || !isValidImageSrc(src)
+      ? "/placeholder-thumbnail.svg"
+      : src;
 
   return (
     <Image

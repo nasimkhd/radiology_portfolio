@@ -40,7 +40,7 @@ export default async function HomePage() {
               Radiology Video Lessons for Medical Learners
             </h1>
             <p className="mt-5 max-w-lg text-lg leading-relaxed text-muted-foreground">
-              Explore selected public preview videos on YouTube. Full access to
+              Explore selected public preview videos. Full access to
               our complete radiology video library is reserved for verified
               medical members.
             </p>
@@ -94,7 +94,7 @@ export default async function HomePage() {
                 <p className="mt-1 text-sm font-medium text-navy">
                   public previews
                 </p>
-                <p className="text-xs text-muted-foreground">Available on YouTube</p>
+                <p className="text-xs text-muted-foreground">Free to watch</p>
               </div>
               <div className="rounded-xl border border-border bg-secondary/40 p-4">
                 <div className="flex items-center gap-2">
@@ -122,7 +122,7 @@ export default async function HomePage() {
             Public Preview Videos
           </h2>
           <p className="mt-2 text-muted-foreground">
-            Watch these free preview lessons on YouTube.
+            Watch these free preview lessons on the site.
           </p>
         </div>
 
@@ -164,8 +164,8 @@ export default async function HomePage() {
             />
             <Feature
               icon={<Link2 className="size-5" />}
-              title="YouTube links after login"
-              body="We reveal the YouTube link only after an access check, so you can watch on the platform you already know."
+              title="Watch after login"
+              body="Member-only lessons play on the site after an access check. You can also open them on YouTube."
             />
           </div>
 

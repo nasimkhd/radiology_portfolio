@@ -74,11 +74,11 @@ export function MemberCatalog({
           <Info className="mt-0.5 size-4 shrink-0 text-primary" />
           <div>
             <p className="text-sm font-semibold text-navy">
-              Links open on YouTube after access check
+              Watch videos on the site
             </p>
             <p className="mt-0.5 text-xs text-muted-foreground">
-              You&apos;ll be redirected to YouTube to watch. Access is verified
-              before opening.
+              Lessons play inline after a quick access check. You can also open
+              them on YouTube.
             </p>
           </div>
         </div>

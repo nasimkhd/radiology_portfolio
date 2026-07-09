@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { ExternalLink, Lock } from "lucide-react";
+import { Lock, Play } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { buttonVariants } from "@/components/ui/button";
 import { VideoThumbnail } from "@/components/video-thumbnail";
@@ -68,8 +68,8 @@ export function VideoCard({ video }: { video: CatalogVideo }) {
               href={video.watchPath ?? "#"}
               className={cn(buttonVariants({ variant: "primary" }), "w-full")}
             >
-              <ExternalLink className="size-4" />
-              Watch on YouTube
+              <Play className="size-4" />
+              Watch video
             </Link>
           )}
         </div>

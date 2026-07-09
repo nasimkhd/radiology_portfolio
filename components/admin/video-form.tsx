@@ -88,7 +88,7 @@ export function VideoForm({
           placeholder="https://www.youtube.com/watch?v=..."
         />
         <p className="text-xs text-muted-foreground">
-          The video ID is extracted automatically for thumbnails.
+          The video ID is extracted automatically for thumbnails and playback.
         </p>
       </div>
 
@@ -100,25 +100,40 @@ export function VideoForm({
           defaultValue={video?.thumbnail_url ?? ""}
           placeholder="Leave blank to use the YouTube thumbnail"
         />
+        <p className="text-xs text-muted-foreground">
+          Must be a full image URL (https://…) if provided. Leave blank to use
+          the YouTube thumbnail.
+        </p>
+      </div>
+
+      <div className="space-y-1.5">
+        <Label htmlFor="categoryId">Category</Label>
+        <select
+          id="categoryId"
+          name="categoryId"
+          defaultValue={video?.category_id ?? ""}
+          className={selectClass}
+        >
+          <option value="">Uncategorized</option>
+          {categories.map((c) => (
+            <option key={c.id} value={c.id}>
+              {c.name}
+            </option>
+          ))}
+        </select>
+        <Input
+          id="newCategoryName"
+          name="newCategoryName"
+          placeholder="Or type a new category name"
+        />
+        <p className="text-xs text-muted-foreground">
+          {categories.length === 0
+            ? "No categories yet. Type a name above and save — it will show up in this dropdown next time."
+            : "Pick an existing category, or type a new name to create one when you save."}
+        </p>
       </div>
 
       <div className="grid gap-5 sm:grid-cols-2">
-        <div className="space-y-1.5">
-          <Label htmlFor="categoryId">Category</Label>
-          <select
-            id="categoryId"
-            name="categoryId"
-            defaultValue={video?.category_id ?? ""}
-            className={selectClass}
-          >
-            <option value="">Uncategorized</option>
-            {categories.map((c) => (
-              <option key={c.id} value={c.id}>
-                {c.name}
-              </option>
-            ))}
-          </select>
-        </div>
         <div className="space-y-1.5">
           <Label htmlFor="displayOrder">Display order</Label>
           <Input
@@ -128,9 +143,6 @@ export function VideoForm({
             defaultValue={video?.display_order ?? 0}
           />
         </div>
-      </div>
-
-      <div className="grid gap-5 sm:grid-cols-2">
         <div className="space-y-1.5">
           <Label htmlFor="accessLevel">Access level</Label>
           <select
@@ -143,19 +155,20 @@ export function VideoForm({
             <option value="members">Members only</option>
           </select>
         </div>
-        <div className="space-y-1.5">
-          <Label htmlFor="status">Status</Label>
-          <select
-            id="status"
-            name="status"
-            defaultValue={video?.status ?? "draft"}
-            className={selectClass}
-          >
-            <option value="draft">Draft</option>
-            <option value="published">Published</option>
-            <option value="archived">Archived</option>
-          </select>
-        </div>
+      </div>
+
+      <div className="space-y-1.5">
+        <Label htmlFor="status">Status</Label>
+        <select
+          id="status"
+          name="status"
+          defaultValue={video?.status ?? "draft"}
+          className={selectClass}
+        >
+          <option value="draft">Draft</option>
+          <option value="published">Published</option>
+          <option value="archived">Archived</option>
+        </select>
       </div>
 
       <div className="flex gap-3 pt-2">

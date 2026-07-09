@@ -27,8 +27,8 @@ export default async function VideosPage() {
         </h1>
         <p className="mt-2 max-w-2xl text-muted-foreground">
           {viewer.isApprovedMember
-            ? "You have full access to the curated radiology catalog. Every lesson opens on YouTube after a quick access check."
-            : "Selected preview lessons are free to watch. The full library is available to verified medical members."}
+            ? "You have full access to the curated radiology catalog. Every lesson plays right here after a quick access check."
+            : "Selected preview lessons are free to watch on the site. The full library is available to verified medical members."}
         </p>
       </header>
 

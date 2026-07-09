@@ -37,15 +37,29 @@ export function extractYouTubeId(url: string): string | null {
   return null;
 }
 
+/** True when a value can be passed to `next/image` as `src`. */
+export function isValidImageSrc(src: string): boolean {
+  return (
+    src.startsWith("/") ||
+    src.startsWith("https://") ||
+    src.startsWith("http://")
+  );
+}
+
 /**
  * Resolve the best thumbnail source for a video following the doc priority:
  * 1. custom thumbnail_url, 2. YouTube-generated from video id, 3. local placeholder.
  */
+/** Build a privacy-friendly YouTube embed URL for inline playback. */
+export function getYouTubeEmbedUrl(videoId: string): string {
+  return `https://www.youtube-nocookie.com/embed/${videoId}?rel=0&modestbranding=1`;
+}
+
 export function resolveThumbnail(
   thumbnailUrl: string | null | undefined,
   youtubeVideoId: string | null | undefined
 ): string {
-  if (thumbnailUrl) return thumbnailUrl;
+  if (thumbnailUrl && isValidImageSrc(thumbnailUrl)) return thumbnailUrl;
   if (youtubeVideoId && !youtubeVideoId.startsWith("REPLACE_ME")) {
     return `https://img.youtube.com/vi/${youtubeVideoId}/hqdefault.jpg`;
   }

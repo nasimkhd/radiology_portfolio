@@ -13,7 +13,7 @@ import {
   sendMembershipApprovedEmail,
   sendMembershipRejectedEmail,
 } from "@/lib/email";
-import { extractYouTubeId, isValidYouTubeUrl } from "@/lib/youtube";
+import { extractYouTubeId, isValidImageSrc, isValidYouTubeUrl } from "@/lib/youtube";
 
 export interface ActionResult {
   ok: boolean;
@@ -262,6 +262,7 @@ function parseVideoForm(formData: FormData) {
   const youtubeUrl = String(formData.get("youtubeUrl") ?? "").trim();
   const thumbnailUrl = String(formData.get("thumbnailUrl") ?? "").trim();
   const categoryId = String(formData.get("categoryId") ?? "").trim();
+  const newCategoryName = String(formData.get("newCategoryName") ?? "").trim();
   const accessLevel = String(formData.get("accessLevel") ?? "members");
   const status = String(formData.get("status") ?? "draft");
   const displayOrder = Number(formData.get("displayOrder") ?? 0);
@@ -275,6 +276,7 @@ function parseVideoForm(formData: FormData) {
     youtubeUrl,
     thumbnailUrl,
     categoryId,
+    newCategoryName,
     accessLevel,
     status,
     displayOrder: Number.isFinite(displayOrder) ? displayOrder : 0,
@@ -288,13 +290,64 @@ function validateVideo(input: ReturnType<typeof parseVideoForm>): string | null 
   if (!isValidYouTubeUrl(input.youtubeUrl)) {
     return "YouTube URL must start with https://www.youtube.com/ or https://youtu.be/.";
   }
+  if (input.thumbnailUrl && !isValidImageSrc(input.thumbnailUrl)) {
+    return "Custom thumbnail must be a full URL (https://…) or a site path starting with /.";
+  }
   if (!["public", "members"].includes(input.accessLevel)) {
     return "Invalid access level.";
   }
   if (!["draft", "published", "archived"].includes(input.status)) {
     return "Invalid status.";
   }
+  if (input.newCategoryName && !isValidSlug(slugify(input.newCategoryName))) {
+    return "Category name must use letters or numbers.";
+  }
   return null;
+}
+
+async function resolveVideoCategoryId(
+  supabase: ReturnType<typeof createAdminClient>,
+  categoryId: string,
+  newCategoryName: string
+): Promise<{ categoryId: string | null; error?: string }> {
+  const newName = newCategoryName.trim();
+  if (!newName) {
+    return { categoryId: categoryId || null };
+  }
+
+  const slug = slugify(newName);
+  const { data: existing } = await supabase
+    .from("categories")
+    .select("id")
+    .eq("slug", slug)
+    .maybeSingle<{ id: string }>();
+
+  if (existing) {
+    return { categoryId: existing.id };
+  }
+
+  const { data: lastCategory } = await supabase
+    .from("categories")
+    .select("display_order")
+    .order("display_order", { ascending: false })
+    .limit(1)
+    .maybeSingle<{ display_order: number }>();
+
+  const { data: created, error } = await supabase
+    .from("categories")
+    .insert({
+      name: newName,
+      slug,
+      display_order: (lastCategory?.display_order ?? 0) + 1,
+    })
+    .select("id")
+    .single<{ id: string }>();
+
+  if (error || !created) {
+    return { categoryId: null, error: "Could not create the category." };
+  }
+
+  return { categoryId: created.id };
 }
 
 export async function createVideo(formData: FormData): Promise<ActionResult> {
@@ -307,6 +360,15 @@ export async function createVideo(formData: FormData): Promise<ActionResult> {
 
   const youtubeVideoId = extractYouTubeId(input.youtubeUrl);
 
+  const categoryResult = await resolveVideoCategoryId(
+    supabase,
+    input.categoryId,
+    input.newCategoryName
+  );
+  if (categoryResult.error) {
+    return { ok: false, error: categoryResult.error };
+  }
+
   const { error } = await supabase.from("videos").insert({
     title: input.title,
     slug: input.slug,
@@ -314,7 +376,7 @@ export async function createVideo(formData: FormData): Promise<ActionResult> {
     youtube_url: input.youtubeUrl,
     youtube_video_id: youtubeVideoId,
     thumbnail_url: input.thumbnailUrl || null,
-    category_id: input.categoryId || null,
+    category_id: categoryResult.categoryId,
     access_level: input.accessLevel,
     status: input.status,
     display_order: input.displayOrder,
@@ -344,6 +406,15 @@ export async function updateVideo(
 
   const youtubeVideoId = extractYouTubeId(input.youtubeUrl);
 
+  const categoryResult = await resolveVideoCategoryId(
+    supabase,
+    input.categoryId,
+    input.newCategoryName
+  );
+  if (categoryResult.error) {
+    return { ok: false, error: categoryResult.error };
+  }
+
   const { data: existing } = await supabase
     .from("videos")
     .select("status, published_at")
@@ -364,7 +435,7 @@ export async function updateVideo(
       youtube_url: input.youtubeUrl,
       youtube_video_id: youtubeVideoId,
       thumbnail_url: input.thumbnailUrl || null,
-      category_id: input.categoryId || null,
+      category_id: categoryResult.categoryId,
       access_level: input.accessLevel,
       status: input.status,
       display_order: input.displayOrder,

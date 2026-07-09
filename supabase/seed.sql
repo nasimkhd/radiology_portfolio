@@ -11,14 +11,18 @@
 -- =====================================================================
 insert into public.categories (name, slug, description, display_order)
 values
-  ('Chest Radiology', 'chest', 'Chest radiographs and thoracic CT interpretation.', 1),
-  ('Neuroradiology', 'neuro', 'Brain and spine imaging across CT and MRI.', 2),
-  ('Musculoskeletal', 'msk', 'Bone, joint, and soft-tissue imaging.', 3),
-  ('Emergency Radiology', 'emergency', 'Acute and trauma imaging findings.', 4),
-  ('Abdominal Imaging', 'abdominal', 'Abdominopelvic CT, ultrasound, and MRI.', 5),
-  ('Board Review', 'board-review', 'High-yield review for radiology exams.', 6)
-on conflict (slug) do nothing;
-
+  ('Basics', 'basics', 'Foundational radiology concepts and systematic approaches.', 1),
+  ('Cardiothoracic', 'cardiothoracic', 'Chest radiographs, thoracic CT, and cardiac imaging.', 2),
+  ('Neuroradiology', 'neuroradiology', 'Brain and spine imaging across CT and MRI.', 3),
+  ('Abdominal Radiology', 'abdominal-radiology', 'Abdominopelvic CT, ultrasound, and MRI.', 4),
+  ('Breast Imaging', 'breast-imaging', 'Mammography, breast ultrasound, and breast MRI.', 5),
+  ('Musculoskeletal', 'musculoskeletal', 'Bone, joint, and soft-tissue imaging.', 6),
+  ('Interventional Radiology', 'interventional-radiology', 'Image-guided procedures and vascular interventions.', 7),
+  ('Pediatric Radiology', 'pediatric-radiology', 'Pediatric-specific imaging findings and techniques.', 8)
+on conflict (slug) do update set
+  name = excluded.name,
+  description = excluded.description,
+  display_order = excluded.display_order;
 -- =====================================================================
 -- Allowed email domains (examples only — replace/remove before launch)
 -- =====================================================================
@@ -36,7 +40,7 @@ insert into public.videos
   (category_id, title, slug, description, youtube_url, youtube_video_id, access_level, status, display_order, published_at)
 values
   (
-    (select id from public.categories where slug = 'neuro'),
+    (select id from public.categories where slug = 'neuroradiology'),
     'CT Head: Acute Hemorrhage',
     'ct-head-acute-hemorrhage',
     'Key CT findings for common intracranial hemorrhages and a systematic review approach.',
@@ -45,7 +49,7 @@ values
     'public', 'published', 1, now()
   ),
   (
-    (select id from public.categories where slug = 'chest'),
+    (select id from public.categories where slug = 'cardiothoracic'),
     'CXR: Systematic Interpretation',
     'cxr-systematic-interpretation',
     'A step-by-step approach to reading the chest radiograph consistently.',
@@ -54,7 +58,7 @@ values
     'public', 'published', 2, now()
   ),
   (
-    (select id from public.categories where slug = 'abdominal'),
+    (select id from public.categories where slug = 'abdominal-radiology'),
     'CT Abdomen: Acute Appendicitis',
     'ct-abdomen-acute-appendicitis',
     'Imaging features and pitfalls in acute appendicitis on CT.',
@@ -64,7 +68,7 @@ values
   ),
   -- Member-only videos.
   (
-    (select id from public.categories where slug = 'msk'),
+    (select id from public.categories where slug = 'musculoskeletal'),
     'MRI Spine: Red Flags',
     'mri-spine-red-flags',
     'Key red-flag findings in the spine that require urgent recognition and management.',
@@ -73,7 +77,7 @@ values
     'members', 'published', 4, now()
   ),
   (
-    (select id from public.categories where slug = 'chest'),
+    (select id from public.categories where slug = 'cardiothoracic'),
     'CT Chest: Pulmonary Embolism',
     'ct-chest-pulmonary-embolism',
     'CT pulmonary angiography findings of pulmonary embolism and pitfalls to avoid.',
@@ -82,7 +86,7 @@ values
     'members', 'published', 5, now()
   ),
   (
-    (select id from public.categories where slug = 'neuro'),
+    (select id from public.categories where slug = 'neuroradiology'),
     'MRI Brain: Demyelinating Disease',
     'mri-brain-demyelinating-disease',
     'Imaging features and differential diagnosis of common demyelinating disorders.',
@@ -91,7 +95,7 @@ values
     'members', 'published', 6, now()
   ),
   (
-    (select id from public.categories where slug = 'msk'),
+    (select id from public.categories where slug = 'musculoskeletal'),
     'Wrist Trauma: Fracture Patterns',
     'wrist-trauma-fracture-patterns',
     'Common wrist fracture patterns and a systematic approach to evaluation on radiographs.',
@@ -100,7 +104,7 @@ values
     'members', 'published', 7, now()
   ),
   (
-    (select id from public.categories where slug = 'emergency'),
+    (select id from public.categories where slug = 'abdominal-radiology'),
     'FAST Ultrasound in Trauma',
     'fast-ultrasound-in-trauma',
     'Focused assessment with sonography in trauma: technique, views, and interpretation.',
@@ -109,7 +113,7 @@ values
     'members', 'published', 8, now()
   ),
   (
-    (select id from public.categories where slug = 'board-review'),
+    (select id from public.categories where slug = 'cardiothoracic'),
     'Board Review: High-Yield Chest Cases',
     'board-review-high-yield-chest',
     'Rapid-fire high-yield chest cases to prepare for radiology board examinations.',
