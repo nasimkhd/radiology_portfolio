@@ -15,9 +15,15 @@ export const metadata: Metadata = {
 export default async function SignInPage({
   searchParams,
 }: {
-  searchParams: Promise<{ next?: string }>;
+  searchParams: Promise<{ next?: string; error?: string }>;
 }) {
-  const { next } = await searchParams;
+  const { next, error } = await searchParams;
+  const authError =
+    error === "password_reset"
+      ? "That password reset link is invalid or has expired. Request a new one below."
+      : error === "verification"
+        ? "That verification link is invalid or has expired."
+        : undefined;
   const { isApprovedMember } = await getViewerContext();
   if (isApprovedMember) redirect(next ?? "/dashboard/videos");
 
@@ -87,7 +93,7 @@ export default async function SignInPage({
               Sign in to continue to the member video library.
             </p>
             <div className="mt-10">
-              <SignInForm next={next} />
+              <SignInForm next={next} authError={authError} />
             </div>
           </Card>
         </div>

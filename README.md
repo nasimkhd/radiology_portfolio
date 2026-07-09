@@ -71,6 +71,16 @@ with real links in the admin dashboard (or edit the seed) before launch.
 
 That keeps the confirm link on your domain (better deliverability) and works with `/auth/confirm`.
 
+In **Email Templates → Reset Password**, replace `{{ .ConfirmationURL }}` with:
+
+```html
+<a href="{{ .SiteURL }}/auth/recovery?token_hash={{ .TokenHash }}">
+  Reset your password
+</a>
+```
+
+That sends users through `/auth/recovery` and then to `/update-password` to choose a new password.
+
 ### 5. (Optional) Test signup with a personal email
 
 By default, Gmail and other personal domains are rejected. For local testing only,

@@ -1,6 +1,7 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { CircleAlert } from "lucide-react";
 import { Card } from "@/components/ui/card";
@@ -15,7 +16,21 @@ export default function UpdatePasswordPage() {
   const [password, setPassword] = useState("");
   const [confirm, setConfirm] = useState("");
   const [submitting, setSubmitting] = useState(false);
+  const [checkingSession, setCheckingSession] = useState(true);
+  const [sessionError, setSessionError] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    const supabase = createClient();
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      if (!session) {
+        setSessionError(
+          "This reset link is invalid or has expired. Request a new link below."
+        );
+      }
+      setCheckingSession(false);
+    });
+  }, []);
 
   async function onSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -52,10 +67,10 @@ export default function UpdatePasswordPage() {
           Choose a new password for your account.
         </p>
         <form onSubmit={onSubmit} className="mt-6 space-y-4" noValidate>
-          {error && (
+          {(sessionError || error) && (
             <Alert variant="destructive">
               <CircleAlert />
-              <AlertDescription>{error}</AlertDescription>
+              <AlertDescription>{sessionError ?? error}</AlertDescription>
             </Alert>
           )}
           <div className="space-y-1.5">
@@ -81,9 +96,23 @@ export default function UpdatePasswordPage() {
               onChange={(e) => setConfirm(e.target.value)}
             />
           </div>
-          <Button type="submit" className="w-full" disabled={submitting}>
+          <Button
+            type="submit"
+            className="w-full"
+            disabled={submitting || checkingSession || Boolean(sessionError)}
+          >
             {submitting ? "Updating…" : "Update password"}
           </Button>
+          {sessionError && (
+            <p className="text-center text-sm text-muted-foreground">
+              <Link
+                href="/forgot-password"
+                className="font-semibold text-primary hover:underline"
+              >
+                Request a new reset link
+              </Link>
+            </p>
+          )}
         </form>
       </Card>
     </div>

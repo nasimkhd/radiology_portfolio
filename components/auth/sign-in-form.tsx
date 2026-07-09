@@ -12,7 +12,13 @@ import { createClient } from "@/lib/supabase/client";
 
 const REMEMBER_EMAIL_KEY = "rfs-remember-email";
 
-export function SignInForm({ next }: { next?: string }) {
+export function SignInForm({
+  next,
+  authError,
+}: {
+  next?: string;
+  authError?: string;
+}) {
   const router = useRouter();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -99,10 +105,10 @@ export function SignInForm({ next }: { next?: string }) {
         />
       </div>
 
-      {error && (
+      {(authError || error) && (
         <Alert variant="destructive">
           <CircleAlert />
-          <AlertDescription>{error}</AlertDescription>
+          <AlertDescription>{error ?? authError}</AlertDescription>
         </Alert>
       )}
 

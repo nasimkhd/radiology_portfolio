@@ -29,6 +29,10 @@ export async function GET(request: Request) {
     return NextResponse.redirect(`${origin}/sign-in?error=verification`);
   }
 
+  if (type === "recovery") {
+    return NextResponse.redirect(`${origin}/update-password`);
+  }
+
   // Prefer an in-app path for next; ignore absolute external URLs for safety.
   const safeNext =
     next && next.startsWith("/") && !next.startsWith("//") ? next : null;
