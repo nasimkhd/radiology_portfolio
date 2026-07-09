@@ -14,6 +14,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { approveMember, rejectMember } from "@/app/(admin)/admin/actions";
+import { isPersonalEmailDomain } from "@/lib/domains";
 import type { MembershipStatus, UserRole } from "@/lib/types";
 
 export interface ReviewProfile {
@@ -50,7 +51,6 @@ export function MemberReview({ profiles }: { profiles: ReviewProfile[] }) {
     profiles.find((p) => p.membership_status === "pending")?.id ?? null
   );
   const [notes, setNotes] = useState("");
-  const [trustDomain, setTrustDomain] = useState(true);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [warning, setWarning] = useState<string | null>(null);
@@ -62,7 +62,7 @@ export function MemberReview({ profiles }: { profiles: ReviewProfile[] }) {
     setBusy(true);
     setError(null);
     setWarning(null);
-    const result = await approveMember(selected.id, trustDomain, notes);
+    const result = await approveMember(selected.id, notes);
     setBusy(false);
     if (!result.ok) {
       setError(result.error ?? "Something went wrong.");
@@ -210,18 +210,17 @@ export function MemberReview({ profiles }: { profiles: ReviewProfile[] }) {
               />
             </div>
 
-            {selected.membership_status === "pending" && (
-              <label className="flex items-center gap-2 text-sm text-foreground">
-                <input
-                  type="checkbox"
-                  checked={trustDomain}
-                  onChange={(e) => setTrustDomain(e.target.checked)}
-                  className="size-4 rounded border-input accent-[color:var(--primary)]"
-                />
-                Trust <span className="font-medium">{selected.email_domain}</span>{" "}
-                for automatic approval
-              </label>
-            )}
+            {selected.membership_status === "pending" &&
+              !selected.domainTrusted &&
+              !isPersonalEmailDomain(selected.email_domain) && (
+                <p className="text-sm text-muted-foreground">
+                  Approving will add{" "}
+                  <span className="font-medium text-foreground">
+                    {selected.email_domain}
+                  </span>{" "}
+                  to trusted domains for automatic future signups.
+                </p>
+              )}
 
             {error && (
               <Alert variant="destructive">

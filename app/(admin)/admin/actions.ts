@@ -25,9 +25,76 @@ export interface ActionResult {
 // Members
 // ---------------------------------------------------------------------------
 
+async function upsertTrustedDomain(
+  supabase: ReturnType<typeof createAdminClient>,
+  {
+    domain,
+    organizationName,
+    adminId,
+    trustSource,
+  }: {
+    domain: string;
+    organizationName: string;
+    adminId: string | null;
+    trustSource: "admin_review" | "manual_admin";
+  }
+): Promise<ActionResult> {
+  if (!domain || isPersonalEmailDomain(domain)) {
+    return { ok: true };
+  }
+
+  const { error } = await supabase.from("allowed_email_domains").upsert(
+    {
+      domain,
+      organization_name: organizationName,
+      auto_approve: true,
+      trust_source: trustSource,
+      created_by: adminId,
+    },
+    { onConflict: "domain" }
+  );
+
+  if (error) return { ok: false, error: "Could not save the trusted domain." };
+  return { ok: true };
+}
+
+/** Backfill trusted domains from already-approved members (idempotent). */
+export async function syncDomainsFromApprovedMembers(): Promise<void> {
+  await requireAdmin();
+  const supabase = createAdminClient();
+
+  const { data: profiles } = await supabase
+    .from("profiles")
+    .select("email_domain, institution_name")
+    .eq("membership_status", "approved");
+
+  const byDomain = new Map<string, string>();
+  for (const profile of profiles ?? []) {
+    if (!profile.email_domain || isPersonalEmailDomain(profile.email_domain)) {
+      continue;
+    }
+    if (!byDomain.has(profile.email_domain)) {
+      byDomain.set(profile.email_domain, profile.institution_name);
+    }
+  }
+
+  if (byDomain.size === 0) return;
+
+  const rows = [...byDomain.entries()].map(([domain, organization_name]) => ({
+    domain,
+    organization_name,
+    auto_approve: true,
+    trust_source: "admin_review" as const,
+  }));
+
+  await supabase.from("allowed_email_domains").upsert(rows, {
+    onConflict: "domain",
+    ignoreDuplicates: true,
+  });
+}
+
 export async function approveMember(
   profileId: string,
-  trustDomain: boolean,
   notes?: string
 ): Promise<ActionResult> {
   const { profile: admin } = await requireAdmin();
@@ -53,20 +120,15 @@ export async function approveMember(
 
   if (error) return { ok: false, error: "Could not approve member." };
 
-  // Optionally trust the member's domain for future automatic approvals.
-  if (trustDomain && target.email_domain) {
-    if (!isPersonalEmailDomain(target.email_domain)) {
-      await supabase.from("allowed_email_domains").upsert(
-        {
-          domain: target.email_domain,
-          organization_name: target.institution_name || target.email_domain,
-          auto_approve: true,
-          trust_source: "admin_review",
-          created_by: admin?.id ?? null,
-        },
-        { onConflict: "domain" }
-      );
-    }
+  const domainResult = await upsertTrustedDomain(supabase, {
+    domain: target.email_domain,
+    organizationName: target.institution_name || target.email_domain,
+    adminId: admin?.id ?? null,
+    trustSource: "admin_review",
+  });
+
+  if (!domainResult.ok) {
+    return domainResult;
   }
 
   const emailResult = await sendMembershipApprovedEmail({
@@ -75,6 +137,7 @@ export async function approveMember(
   });
 
   revalidatePath("/admin/members");
+  revalidatePath("/admin/domains");
   revalidatePath("/admin");
 
   if (!emailResult.ok) {

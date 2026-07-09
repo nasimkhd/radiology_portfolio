@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { syncDomainsFromApprovedMembers } from "@/app/(admin)/admin/actions";
 import { DomainManager } from "@/components/admin/domain-manager";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { isSupabaseConfigured } from "@/lib/env";
@@ -8,6 +9,7 @@ export const metadata: Metadata = { title: "Allowed Domains" };
 
 async function getDomains(): Promise<AllowedEmailDomain[]> {
   if (!isSupabaseConfigured) return [];
+  await syncDomainsFromApprovedMembers();
   const supabase = createAdminClient();
   const { data } = await supabase
     .from("allowed_email_domains")
