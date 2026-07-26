@@ -22,14 +22,35 @@ export default function UpdatePasswordPage() {
 
   useEffect(() => {
     const supabase = createClient();
-    supabase.auth.getSession().then(({ data: { session } }) => {
+    let active = true;
+
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange((event, session) => {
+      if (!active) return;
+      if (event === "PASSWORD_RECOVERY" || session) {
+        setSessionError(null);
+        setCheckingSession(false);
+      }
+    });
+
+    supabase.auth.getSession().then(({ data: { session }, error }) => {
+      if (!active) return;
       if (!session) {
         setSessionError(
-          "This reset link is invalid or has expired. Request a new link below."
+          error?.message ??
+            "This reset link is invalid or has expired. Request a new link below."
         );
+      } else {
+        setSessionError(null);
       }
       setCheckingSession(false);
     });
+
+    return () => {
+      active = false;
+      subscription.unsubscribe();
+    };
   }, []);
 
   async function onSubmit(e: React.FormEvent) {
@@ -47,16 +68,34 @@ export default function UpdatePasswordPage() {
 
     setSubmitting(true);
     const supabase = createClient();
-    const { error: updateError } = await supabase.auth.updateUser({ password });
-    if (updateError) {
-      setError(
-        "Could not update your password. The reset link may have expired."
-      );
+
+    try {
+      const {
+        data: { session },
+      } = await supabase.auth.getSession();
+
+      if (!session) {
+        setSessionError(
+          "This reset link is invalid or has expired. Request a new link below."
+        );
+        return;
+      }
+
+      const { error: updateError } = await supabase.auth.updateUser({ password });
+      if (updateError) {
+        setError(
+          "Could not update your password. The reset link may have expired."
+        );
+        return;
+      }
+
+      router.push("/videos");
+      router.refresh();
+    } catch {
+      setError("Something went wrong while updating your password.");
+    } finally {
       setSubmitting(false);
-      return;
     }
-    router.push("/dashboard/videos");
-    router.refresh();
   }
 
   return (

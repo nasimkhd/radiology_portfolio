@@ -8,7 +8,6 @@ import {
   Home,
   Video,
   Info,
-  LayoutDashboard,
   Shield,
   Menu,
   X,
@@ -28,7 +27,6 @@ const LINK_ICONS: Record<string, LucideIcon> = {
   "/": Home,
   "/videos": Video,
   "/about": Info,
-  "/dashboard": LayoutDashboard,
   "/admin": Shield,
 };
 
@@ -54,11 +52,6 @@ export function MobileNav({
 }) {
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
-  const [mounted, setMounted] = useState(false);
-
-  useEffect(() => {
-    setMounted(true);
-  }, []);
 
   useEffect(() => {
     document.body.style.overflow = open ? "hidden" : "";
@@ -176,7 +169,7 @@ export function MobileNav({
         <Menu className="size-5" />
       </button>
 
-      {open && mounted && createPortal(drawer, document.body)}
+      {open && createPortal(drawer, document.body)}
     </div>
   );
 }

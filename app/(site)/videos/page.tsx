@@ -1,9 +1,9 @@
 import Link from "next/link";
 import type { Metadata } from "next";
 import { Lock } from "lucide-react";
+import { MemberCatalog } from "@/components/member-catalog";
 import { buttonVariants } from "@/components/ui/button";
-import { VideoCard } from "@/components/video-card";
-import { getPublishedCatalog } from "@/lib/catalog";
+import { getCatalogCategories, getPublishedCatalog } from "@/lib/catalog";
 import { getViewerContext } from "@/lib/auth";
 
 export const metadata: Metadata = {
@@ -15,9 +15,8 @@ export const metadata: Metadata = {
 export default async function VideosPage() {
   const viewer = await getViewerContext();
   const catalog = await getPublishedCatalog(viewer.isApprovedMember);
-
-  const previews = catalog.filter((v) => v.accessLevel === "public");
   const members = catalog.filter((v) => v.accessLevel === "members");
+  const categories = await getCatalogCategories(catalog);
 
   return (
     <div className="mx-auto max-w-6xl px-4 py-12 sm:px-6">
@@ -32,29 +31,10 @@ export default async function VideosPage() {
         </p>
       </header>
 
-      {/* Public previews */}
-      <section className="mb-14">
-        <h2 className="mb-5 text-lg font-semibold text-navy">
-          Public preview videos
-        </h2>
-        {previews.length > 0 ? (
-          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-            {previews.map((video) => (
-              <VideoCard key={video.id} video={video} />
-            ))}
-          </div>
-        ) : (
-          <EmptyState />
-        )}
-      </section>
-
-      {/* Members library */}
-      <section>
+      <section className="mb-8">
         <div className="mb-5 flex flex-wrap items-center justify-between gap-3">
           <h2 className="text-lg font-semibold text-navy">
-            {viewer.isApprovedMember
-              ? "Member library"
-              : "Members-only library"}
+            Browse by category
           </h2>
           {!viewer.isApprovedMember && members.length > 0 && (
             <span className="inline-flex items-center gap-1.5 text-sm text-muted-foreground">
@@ -83,26 +63,9 @@ export default async function VideosPage() {
             </div>
           </div>
         )}
-
-        {members.length > 0 ? (
-          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-            {members.map((video) => (
-              <VideoCard key={video.id} video={video} />
-            ))}
-          </div>
-        ) : (
-          <EmptyState />
-        )}
       </section>
-    </div>
-  );
-}
 
-function EmptyState() {
-  return (
-    <p className="rounded-xl border border-dashed border-border bg-card p-8 text-center text-sm text-muted-foreground">
-      No videos to show yet. Once Supabase is connected and the catalog is
-      seeded, videos will appear here.
-    </p>
+      <MemberCatalog videos={catalog} categories={categories} />
+    </div>
   );
 }

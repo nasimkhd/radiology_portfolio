@@ -4,7 +4,6 @@ import { ArrowLeft, ExternalLink } from "lucide-react";
 import { YouTubePlayer } from "@/components/youtube-player";
 import { Badge } from "@/components/ui/badge";
 import { buttonVariants } from "@/components/ui/button";
-import { getViewerContext } from "@/lib/auth";
 import { getPublishedVideoMetadata, requireWatchableVideo } from "@/lib/watch-video";
 import { cn } from "@/lib/utils";
 
@@ -32,13 +31,10 @@ export async function generateMetadata({
 
 export default async function WatchPage({ params }: PageProps) {
   const { slug } = await params;
-  const [video, viewer] = await Promise.all([
-    requireWatchableVideo(slug),
-    getViewerContext(),
-  ]);
+  const video = await requireWatchableVideo(slug);
 
-  const backHref = viewer.isApprovedMember ? "/dashboard/videos" : "/videos";
-  const backLabel = viewer.isApprovedMember ? "Member library" : "Video library";
+  const backHref = "/videos";
+  const backLabel = "Video library";
 
   return (
     <div className="mx-auto max-w-4xl px-4 py-10 sm:px-6">

@@ -18,7 +18,7 @@ export default async function VerifyEmailPage() {
     await getViewerContext();
 
   // Already verified + approved → member library.
-  if (isApprovedMember) redirect("/dashboard/videos");
+  if (isApprovedMember) redirect("/videos");
 
   // Verified but still waiting on admin review → pending page.
   if (emailVerified && profile?.membership_status === "pending") {

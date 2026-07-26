@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
-import { ChevronDown, LayoutDashboard, Shield, LogOut } from "lucide-react";
+import { ChevronDown, LogOut, Shield, Video } from "lucide-react";
 import { signOutAction } from "@/app/actions/auth";
 import { cn } from "@/lib/utils";
 
@@ -60,8 +60,8 @@ export function UserMenu({
             <p className="truncate text-xs text-muted-foreground">{email}</p>
           </div>
           <div className="p-1.5">
-            <MenuLink href="/dashboard" icon={<LayoutDashboard className="size-4" />}>
-              Dashboard
+            <MenuLink href="/videos" icon={<Video className="size-4" />}>
+              Video library
             </MenuLink>
             {isAdmin && (
               <MenuLink href="/admin" icon={<Shield className="size-4" />}>

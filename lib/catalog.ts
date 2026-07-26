@@ -1,7 +1,7 @@
 import "server-only";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { resolveThumbnail } from "@/lib/youtube";
-import type { CatalogVideo, Category, Video } from "@/lib/types";
+import type { CatalogCategory, CatalogVideo, Category, Video } from "@/lib/types";
 
 type JoinedCategory = Pick<Category, "name" | "slug">;
 type VideoWithCategory = Video & {
@@ -78,8 +78,8 @@ export async function getPublicPreviewVideos(): Promise<CatalogVideo[]> {
 /** Distinct categories present in the published catalog, with counts. */
 export function categoriesFromCatalog(
   videos: CatalogVideo[]
-): { name: string; slug: string; count: number }[] {
-  const map = new Map<string, { name: string; slug: string; count: number }>();
+): CatalogCategory[] {
+  const map = new Map<string, CatalogCategory>();
   for (const v of videos) {
     if (!v.categorySlug || !v.category) continue;
     const existing = map.get(v.categorySlug);
@@ -89,9 +89,44 @@ export function categoriesFromCatalog(
       map.set(v.categorySlug, {
         name: v.category,
         slug: v.categorySlug,
+        description: null,
         count: 1,
       });
     }
   }
   return Array.from(map.values());
+}
+
+/** All configured categories, annotated with published-video counts. */
+export async function getCatalogCategories(
+  videos: CatalogVideo[]
+): Promise<CatalogCategory[]> {
+  const counts = new Map<string, number>();
+  for (const video of videos) {
+    if (!video.categorySlug) continue;
+    counts.set(video.categorySlug, (counts.get(video.categorySlug) ?? 0) + 1);
+  }
+
+  let supabase;
+  try {
+    supabase = createAdminClient();
+  } catch {
+    return categoriesFromCatalog(videos);
+  }
+
+  const { data, error } = await supabase
+    .from("categories")
+    .select("name, slug, description")
+    .order("display_order", { ascending: true });
+
+  if (error || !data) return categoriesFromCatalog(videos);
+
+  return (data as Pick<Category, "name" | "slug" | "description">[]).map(
+    (category) => ({
+      name: category.name,
+      slug: category.slug,
+      description: category.description,
+      count: counts.get(category.slug) ?? 0,
+    })
+  );
 }

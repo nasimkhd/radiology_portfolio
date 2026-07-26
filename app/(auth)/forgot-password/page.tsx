@@ -9,7 +9,6 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { createClient } from "@/lib/supabase/client";
-import { SITE_URL } from "@/lib/env";
 
 export default function ForgotPasswordPage() {
   const [email, setEmail] = useState("");
@@ -21,9 +20,10 @@ export default function ForgotPasswordPage() {
     setError(null);
     setStatus("sending");
     const supabase = createClient();
+    const redirectOrigin = window.location.origin;
     const { error: resetError } = await supabase.auth.resetPasswordForEmail(
       email.trim().toLowerCase(),
-      { redirectTo: `${SITE_URL}/auth/recovery` }
+      { redirectTo: `${redirectOrigin}/auth/recovery` }
     );
     if (resetError) {
       setError("Could not send the reset email. Please try again.");

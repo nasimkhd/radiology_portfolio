@@ -83,3 +83,10 @@ export interface CatalogVideo {
   locked: boolean;
   watchPath: string | null;
 }
+
+export interface CatalogCategory {
+  name: string;
+  slug: string;
+  description: string | null;
+  count: number;
+}

@@ -23,7 +23,7 @@ export const metadata: Metadata = {
 
 export default async function SignUpPage() {
   const { isApprovedMember } = await getViewerContext();
-  if (isApprovedMember) redirect("/dashboard/videos");
+  if (isApprovedMember) redirect("/videos");
 
   return (
     <div className="relative min-h-[calc(100vh-4rem)]">

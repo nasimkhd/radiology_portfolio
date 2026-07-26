@@ -25,7 +25,7 @@ export default async function SignInPage({
         ? "That verification link is invalid or has expired."
         : undefined;
   const { isApprovedMember } = await getViewerContext();
-  if (isApprovedMember) redirect(next ?? "/dashboard/videos");
+  if (isApprovedMember) redirect(next ?? "/videos");
 
   return (
     <div className="relative min-h-[calc(100vh-4rem)]">

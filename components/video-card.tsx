@@ -56,13 +56,16 @@ export function VideoCard({ video }: { video: CatalogVideo }) {
 
         <div className="pt-2">
           {locked ? (
-            <Link
-              href="/sign-up"
-              className={cn(buttonVariants({ variant: "outline" }), "w-full")}
+            <span
+              aria-disabled="true"
+              className={cn(
+                buttonVariants({ variant: "outline" }),
+                "w-full cursor-not-allowed opacity-70"
+              )}
             >
               <Lock className="size-4" />
-              Sign up to unlock
-            </Link>
+              Locked
+            </span>
           ) : (
             <Link
               href={video.watchPath ?? "#"}

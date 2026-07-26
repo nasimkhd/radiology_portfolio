@@ -22,7 +22,7 @@ export default async function PendingApprovalPage({
   const { user, profile, isApprovedMember, emailVerified } =
     await getViewerContext();
 
-  if (isApprovedMember) redirect("/dashboard/videos");
+  if (isApprovedMember) redirect("/videos");
 
   // Email must be verified before waiting on admin review.
   if (user && !emailVerified) {

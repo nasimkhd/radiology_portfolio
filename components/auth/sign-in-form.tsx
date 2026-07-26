@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { CircleAlert, Eye, EyeOff } from "lucide-react";
@@ -12,6 +12,11 @@ import { createClient } from "@/lib/supabase/client";
 
 const REMEMBER_EMAIL_KEY = "rfs-remember-email";
 
+function getRememberedEmail() {
+  if (typeof window === "undefined") return "";
+  return localStorage.getItem(REMEMBER_EMAIL_KEY) ?? "";
+}
+
 export function SignInForm({
   next,
   authError,
@@ -20,20 +25,12 @@ export function SignInForm({
   authError?: string;
 }) {
   const router = useRouter();
-  const [email, setEmail] = useState("");
+  const [email, setEmail] = useState(getRememberedEmail);
   const [password, setPassword] = useState("");
   const [rememberMe, setRememberMe] = useState(true);
   const [showPassword, setShowPassword] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
-
-  useEffect(() => {
-    const savedEmail = localStorage.getItem(REMEMBER_EMAIL_KEY);
-    if (savedEmail) {
-      setEmail(savedEmail);
-      setRememberMe(true);
-    }
-  }, []);
 
   async function onSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -84,8 +81,7 @@ export function SignInForm({
       localStorage.removeItem(REMEMBER_EMAIL_KEY);
     }
 
-    const destination =
-      next ?? (profile.role === "admin" ? "/admin" : "/dashboard/videos");
+    const destination = next ?? (profile.role === "admin" ? "/admin" : "/videos");
     router.push(destination);
     router.refresh();
   }

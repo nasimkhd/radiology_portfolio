@@ -15,7 +15,6 @@ export async function SiteHeader() {
     { href: "/videos", label: "Videos" },
     { href: "/about", label: "About" },
   ];
-  if (isApprovedMember) links.push({ href: "/dashboard", label: "Dashboard" });
   if (isAdmin) links.push({ href: "/admin", label: "Admin" });
 
   return (

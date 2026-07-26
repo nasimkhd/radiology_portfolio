@@ -44,5 +44,5 @@ export async function redirectAfterAuth(
     return NextResponse.redirect(`${origin}/pending-approval?status=rejected`);
   }
 
-  return NextResponse.redirect(`${origin}/dashboard/videos`);
+  return NextResponse.redirect(`${origin}/videos`);
 }

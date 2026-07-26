@@ -114,7 +114,7 @@ export async function requireAdmin(): Promise<ViewerContext> {
   }
   if (!ctx.isAdmin) {
     // Signed in but not an admin.
-    redirect("/dashboard");
+    redirect("/videos");
   }
 
   return ctx;
