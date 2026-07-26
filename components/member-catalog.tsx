@@ -80,7 +80,7 @@ export function MemberCatalog({
 
   return (
     <div className="space-y-8">
-      <div className="grid gap-4 lg:grid-cols-[1fr_280px]">
+      <div className="grid gap-4">
         <div className="relative">
           <Search className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
           <Input
@@ -94,18 +94,6 @@ export function MemberCatalog({
             className="pl-9"
             aria-label="Search videos"
           />
-        </div>
-
-        <div className="flex gap-2.5 rounded-xl border border-primary/20 bg-accent/50 p-4">
-          <Info className="mt-0.5 size-4 shrink-0 text-primary" />
-          <div>
-            <p className="text-sm font-semibold text-navy">
-              Open a category folder
-            </p>
-            <p className="mt-0.5 text-xs text-muted-foreground">
-              Choose a folder to see the lessons inside that category.
-            </p>
-          </div>
         </div>
       </div>
 

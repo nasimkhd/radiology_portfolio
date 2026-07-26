@@ -31,8 +31,8 @@ export default async function HomePage() {
     <div>
       {/* Hero */}
       <section className="relative overflow-hidden border-b border-border bg-gradient-to-b from-accent/60 to-background">
-        <div className="mx-auto grid max-w-6xl gap-10 px-4 py-14 sm:px-6 lg:grid-cols-2 lg:items-center lg:py-20">
-          <div>
+        <div className="mx-auto grid max-w-6xl gap-10 px-4 py-14 sm:px-6 lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)] lg:items-center lg:py-20">
+          <div className="min-w-0">
             <Badge variant="preview" className="mb-5 px-3 py-1">
               <Users className="size-3.5" />
               Trusted education for medical learners
@@ -66,7 +66,7 @@ export default async function HomePage() {
           </div>
 
           {/* Hero visual */}
-          <div className="rounded-2xl border border-border bg-card p-3 shadow-sm">
+          <div className="min-w-0 rounded-2xl border border-border bg-card p-3 shadow-sm">
             <div className="relative aspect-[16/10] overflow-hidden rounded-xl bg-black">
               <Image
                 src="/chest-radiology.jpeg"
@@ -83,9 +83,12 @@ export default async function HomePage() {
                 </Badge>
               </div>
               <div className="absolute right-3 top-3">
-                <Badge variant="members" className="bg-navy/80 text-white backdrop-blur">
-                  <Lock className="size-3" />
-                  Members Library
+                <Badge
+                  variant="members"
+                  className="min-w-0 max-w-[calc(100%-1.5rem)] bg-navy/80 text-white backdrop-blur"
+                >
+                  <Lock className="size-3 shrink-0" />
+                  <span className="truncate">Members Library</span>
                 </Badge>
               </div>
             </div>
