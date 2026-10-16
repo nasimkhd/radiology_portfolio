@@ -28,8 +28,9 @@ create table if not exists public.profiles (
   "lName" text not null,
   email text not null unique,
   email_domain text not null,
-  institution_name text not null,
-  institution_country text not null,
+  institution_name text not null default '',
+  institution_country text not null default '',
+  institutional_email text,
   membership_status text not null default 'pending'
     check (membership_status in ('pending', 'approved', 'rejected')),
   role text not null default 'member'

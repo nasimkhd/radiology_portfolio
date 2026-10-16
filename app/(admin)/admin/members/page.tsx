@@ -14,7 +14,7 @@ async function getData(): Promise<ReviewProfile[]> {
     supabase
       .from("profiles")
       .select(
-        "id, fName, lName, email, email_domain, institution_name, institution_country, membership_status, role, created_at"
+        "id, fName, lName, email, email_domain, institution_name, institution_country, institutional_email, membership_status, role, created_at"
       )
       .order("created_at", { ascending: false }),
     supabase.from("allowed_email_domains").select("domain"),
@@ -30,6 +30,7 @@ async function getData(): Promise<ReviewProfile[]> {
     email_domain: p.email_domain,
     institution_name: p.institution_name,
     institution_country: p.institution_country,
+    institutional_email: p.institutional_email,
     membership_status: p.membership_status,
     role: p.role,
     created_at: p.created_at,
@@ -49,7 +50,8 @@ export default async function MembersPage() {
         Member Review
       </h1>
       <p className="mt-1 text-muted-foreground">
-        Approve verified medical-affiliation requests. {pendingCount} pending.
+        New sign-ups are approved automatically. {pendingCount} still pending
+        from earlier review.
       </p>
 
       <div className="mt-8">

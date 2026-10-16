@@ -25,6 +25,7 @@ export interface ReviewProfile {
   email_domain: string;
   institution_name: string;
   institution_country: string;
+  institutional_email: string | null;
   membership_status: MembershipStatus;
   role: UserRole;
   created_at: string;
@@ -172,8 +173,19 @@ export function MemberReview({ profiles }: { profiles: ReviewProfile[] }) {
             <InfoRow
               icon={<Building2 className="size-4" />}
               label="Institution"
-              value={`${selected.institution_name} · ${selected.institution_country}`}
+              value={
+                [selected.institution_name, selected.institution_country]
+                  .filter(Boolean)
+                  .join(" · ") || "Not provided"
+              }
             />
+            {selected.institutional_email ? (
+              <InfoRow
+                icon={<ShieldCheck className="size-4" />}
+                label="Institutional email"
+                value={selected.institutional_email}
+              />
+            ) : null}
             <InfoRow
               icon={<ShieldCheck className="size-4" />}
               label="Email domain"

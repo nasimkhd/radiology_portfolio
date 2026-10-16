@@ -13,7 +13,6 @@ import { AuthBackground } from "@/components/auth/auth-background";
 import { SignUpForm } from "@/components/auth/sign-up-form";
 import { Card } from "@/components/ui/card";
 import { getViewerContext } from "@/lib/auth";
-import { allowPersonalEmailSignup } from "@/lib/env";
 
 export const metadata: Metadata = {
   title: "Sign Up",
@@ -79,12 +78,12 @@ export default async function SignUpPage() {
                 Sign Up
               </h1>
               <p className="mt-1 text-sm text-muted-foreground">
-                Use your institutional medical email address.
+                Create a free account with any valid email address.
               </p>
             </div>
 
             <Card className="border-border/80 p-8 shadow-xl shadow-navy/8 sm:p-10">
-              <SignUpForm allowPersonalEmail={allowPersonalEmailSignup} />
+              <SignUpForm />
             </Card>
 
             <div className="mt-8 space-y-4 text-center text-xs leading-relaxed text-muted-foreground">

@@ -62,7 +62,17 @@ and often lands in Junk. Replace the button/link with:
 <a href="{{ .SiteURL }}/auth/confirm?token_hash={{ .TokenHash }}&type=email">
   Confirm your email
 </a>
+<div style="margin-top:32px;padding-top:24px;border-top:1px solid #dbe4ea;text-align:center;">
+  <img
+    src="{{ .SiteURL }}/RFS.jpeg"
+    alt="Radio From Scratch"
+    width="180"
+    style="display:block;margin:0 auto;max-width:180px;height:auto;"
+  />
+</div>
 ```
+
+A complete branded HTML template lives at `supabase/email-templates/confirm-signup.html`. Paste it into **Authentication → Email Templates → Confirm signup** so the logo appears under the message.
 
 Use the same pattern for **Magic Link** and **Reset Password** templates,
 changing `type` as needed (`email`, `recovery`). The app handles these at

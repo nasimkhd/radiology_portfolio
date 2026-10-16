@@ -12,6 +12,7 @@ export interface Profile {
   email_domain: string;
   institution_name: string;
   institution_country: string;
+  institutional_email: string | null;
   membership_status: MembershipStatus;
   role: UserRole;
   review_notes: string | null;

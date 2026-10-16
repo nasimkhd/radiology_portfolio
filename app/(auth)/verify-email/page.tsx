@@ -34,9 +34,7 @@ export default async function VerifyEmailPage() {
   }
 
   const nextStep =
-    profile?.membership_status === "approved"
-      ? "Once verified, you can sign in and access the full video library."
-      : "After you verify, your account will be reviewed for member access.";
+    "Once verified, you can sign in and access the full video library.";
 
   return (
     <div className="mx-auto flex min-h-[calc(100vh-4rem)] max-w-lg items-center px-4 py-12">

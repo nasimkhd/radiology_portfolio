@@ -17,6 +17,18 @@ function contactInstructions(): string {
     : "If you believe this is a mistake, please contact the site owner.";
 }
 
+function logoUrl(): string {
+  return `${SITE_URL.replace(/\/$/, "")}/RFS.jpeg`;
+}
+
+function brandFooterHtml(): string {
+  return `
+    <div style="margin-top:32px;padding-top:24px;border-top:1px solid #dbe4ea;text-align:center;">
+      <img src="${escapeHtml(logoUrl())}" alt="Radio From Scratch" width="180" style="display:block;margin:0 auto;max-width:180px;height:auto;" />
+    </div>
+  `.trim();
+}
+
 export async function sendMembershipApprovedEmail(params: {
   to: string;
   firstName: string;
@@ -48,6 +60,7 @@ export async function sendMembershipApprovedEmail(params: {
       </a>
     </p>
     <p style="color:#64748b;font-size:14px;">— Radio From Scratch</p>
+    ${brandFooterHtml()}
   `.trim();
 
   const { error } = await resend.emails.send({
@@ -106,6 +119,7 @@ export async function sendMembershipRejectedEmail(params: {
     ${notesHtml}
     <p style="margin-top:24px;">${escapeHtml(contactLine)}</p>
     <p style="color:#64748b;font-size:14px;">— Radio From Scratch</p>
+    ${brandFooterHtml()}
   `.trim();
 
   const { error } = await resend.emails.send({

@@ -8,6 +8,7 @@ import { redirectAfterAuth } from "@/lib/auth-redirect";
  *
  * Supabase Confirm signup template should use:
  * {{ .SiteURL }}/auth/confirm?token_hash={{ .TokenHash }}&type=email
+ * Logo: {{ .SiteURL }}/RFS.jpeg (see supabase/email-templates/confirm-signup.html)
  *
  * See: https://supabase.com/docs/guides/auth/passwords
  */

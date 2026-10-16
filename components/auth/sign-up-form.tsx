@@ -8,10 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Alert, AlertDescription } from "@/components/ui/alert";
-import { isPersonalEmailDomain, getEmailDomain } from "@/lib/domains";
-
-const PERSONAL_DOMAIN_MESSAGE =
-  "Please use your hospital, university, or medical institution email address.";
+import { isValidEmail } from "@/lib/domains";
 
 function splitFullName(fullName: string) {
   const parts = fullName.trim().split(/\s+/).filter(Boolean);
@@ -20,11 +17,16 @@ function splitFullName(fullName: string) {
   return { fName, lName };
 }
 
-export function SignUpForm({
-  allowPersonalEmail = false,
-}: {
-  allowPersonalEmail?: boolean;
-}) {
+function RequiredAsterisk() {
+  return (
+    <span className="text-destructive" aria-hidden="true">
+      {" "}
+      *
+    </span>
+  );
+}
+
+export function SignUpForm() {
   const router = useRouter();
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
@@ -33,18 +35,13 @@ export function SignUpForm({
 
   const [form, setForm] = useState({
     fullName: "",
+    email: "",
     institutionName: "",
     institutionCountry: "",
-    email: "",
+    institutionalEmail: "",
     password: "",
     confirmPassword: "",
   });
-
-  const emailDomain = getEmailDomain(form.email);
-  const personalDomainWarning =
-    !allowPersonalEmail &&
-    emailDomain.length > 0 &&
-    isPersonalEmailDomain(emailDomain);
 
   function update(field: keyof typeof form, value: string) {
     setForm((prev) => ({ ...prev, [field]: value }));
@@ -55,27 +52,33 @@ export function SignUpForm({
     setError(null);
 
     const { fName, lName } = splitFullName(form.fullName);
+    const email = form.email.trim();
     const institutionName = form.institutionName.trim();
     const institutionCountry = form.institutionCountry.trim();
+    const institutionalEmail = form.institutionalEmail.trim();
 
     if (!fName) {
       setError("Please enter your full name.");
       return;
     }
-    if (!institutionName) {
-      setError("Please enter your affiliated institution name.");
+    if (!email) {
+      setError("Please enter your email address.");
       return;
     }
-    if (!institutionCountry) {
-      setError("Please enter your affiliated institution country.");
+    if (!isValidEmail(email)) {
+      setError("Please enter a valid email address.");
+      return;
+    }
+    if (institutionalEmail && !isValidEmail(institutionalEmail)) {
+      setError("Please enter a valid institutional email, or leave it blank.");
+      return;
+    }
+    if (form.password.length < 8) {
+      setError("Password must be at least 8 characters.");
       return;
     }
     if (form.password !== form.confirmPassword) {
       setError("Passwords do not match.");
-      return;
-    }
-    if (personalDomainWarning) {
-      setError(PERSONAL_DOMAIN_MESSAGE);
       return;
     }
 
@@ -87,10 +90,11 @@ export function SignUpForm({
         body: JSON.stringify({
           fName,
           lName,
-          email: form.email,
+          email,
           password: form.password,
           institutionName,
           institutionCountry,
+          institutionalEmail,
         }),
       });
       const data = await res.json();
@@ -100,7 +104,6 @@ export function SignUpForm({
         return;
       }
 
-      // Always verify email first; pending/approved routing happens after confirm.
       router.push("/verify-email");
     } catch {
       setError("Network error. Please try again.");
@@ -119,7 +122,10 @@ export function SignUpForm({
       )}
 
       <div className="space-y-1.5">
-        <Label htmlFor="fullName">Full name</Label>
+        <Label htmlFor="fullName">
+          Full name
+          <RequiredAsterisk />
+        </Label>
         <Input
           id="fullName"
           autoComplete="name"
@@ -131,34 +137,10 @@ export function SignUpForm({
       </div>
 
       <div className="space-y-1.5">
-        <Label htmlFor="institutionName">Affiliated institution name</Label>
-        <Input
-          id="institutionName"
-          autoComplete="organization"
-          required
-          value={form.institutionName}
-          onChange={(e) => update("institutionName", e.target.value)}
-          placeholder="e.g. Example University Hospital"
-        />
-      </div>
-
-      <div className="space-y-1.5">
-        <Label htmlFor="institutionCountry">Affiliated institution country</Label>
-        <Input
-          id="institutionCountry"
-          autoComplete="country-name"
-          required
-          value={form.institutionCountry}
-          onChange={(e) => update("institutionCountry", e.target.value)}
-          placeholder="e.g. United States"
-        />
-        <p className="text-xs text-muted-foreground">
-          Required for admin review when your email domain is new to the site.
-        </p>
-      </div>
-
-      <div className="space-y-1.5">
-        <Label htmlFor="email">email</Label>
+        <Label htmlFor="email">
+          Email
+          <RequiredAsterisk />
+        </Label>
         <Input
           id="email"
           type="email"
@@ -166,28 +148,59 @@ export function SignUpForm({
           required
           value={form.email}
           onChange={(e) => update("email", e.target.value)}
-          placeholder="name@yourinstitution.edu"
-          aria-invalid={personalDomainWarning}
-          aria-describedby={personalDomainWarning ? "email-warning" : "email-help"}
+          placeholder="you@gmail.com"
         />
         <p id="email-help" className="text-xs text-muted-foreground">
-          Use your hospital, university, medical school, or health-system email
-          address. Personal email addresses such as Gmail, Yahoo, Outlook, and
-          iCloud are not eligible.
+          Personal email addresses such as Gmail, Yahoo, Outlook, and iCloud are
+          accepted.
         </p>
-        {personalDomainWarning && (
-          <div
-            id="email-warning"
-            className="flex items-start gap-2 rounded-lg border border-destructive/25 bg-destructive/8 px-3 py-2.5 text-sm text-destructive"
-          >
-            <CircleAlert className="mt-0.5 size-4 shrink-0" />
-            <span>{PERSONAL_DOMAIN_MESSAGE}</span>
-          </div>
-        )}
       </div>
 
       <div className="space-y-1.5">
-        <Label htmlFor="password">Password</Label>
+        <Label htmlFor="institutionName">
+          Affiliated institution name (if applicable)
+        </Label>
+        <Input
+          id="institutionName"
+          autoComplete="organization"
+          value={form.institutionName}
+          onChange={(e) => update("institutionName", e.target.value)}
+          placeholder="e.g. Example University Hospital"
+        />
+      </div>
+
+      <div className="space-y-1.5">
+        <Label htmlFor="institutionCountry">
+          Affiliated institution country (if applicable)
+        </Label>
+        <Input
+          id="institutionCountry"
+          autoComplete="country-name"
+          value={form.institutionCountry}
+          onChange={(e) => update("institutionCountry", e.target.value)}
+          placeholder="e.g. United States"
+        />
+      </div>
+
+      <div className="space-y-1.5">
+        <Label htmlFor="institutionalEmail">
+          Institutional email (if applicable)
+        </Label>
+        <Input
+          id="institutionalEmail"
+          type="email"
+          autoComplete="off"
+          value={form.institutionalEmail}
+          onChange={(e) => update("institutionalEmail", e.target.value)}
+          placeholder="name@yourinstitution.edu"
+        />
+      </div>
+
+      <div className="space-y-1.5">
+        <Label htmlFor="password">
+          Password
+          <RequiredAsterisk />
+        </Label>
         <div className="relative">
           <Input
             key={showPassword ? "password-visible" : "password-hidden"}
@@ -218,7 +231,10 @@ export function SignUpForm({
       </div>
 
       <div className="space-y-1.5">
-        <Label htmlFor="confirmPassword">Confirm password</Label>
+        <Label htmlFor="confirmPassword">
+          Confirm password
+          <RequiredAsterisk />
+        </Label>
         <div className="relative">
           <Input
             key={showConfirmPassword ? "confirm-visible" : "confirm-hidden"}

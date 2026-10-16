@@ -1,13 +1,8 @@
 import { NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { createAdminClient } from "@/lib/supabase/admin";
-import { SITE_URL, allowPersonalEmailSignup, isSupabaseConfigured } from "@/lib/env";
-import {
-  getEmailDomain,
-  isPersonalEmailDomain,
-  isValidEmail,
-  normalizeEmail,
-} from "@/lib/domains";
+import { SITE_URL, isSupabaseConfigured } from "@/lib/env";
+import { getEmailDomain, isValidEmail, normalizeEmail } from "@/lib/domains";
 
 interface SignUpBody {
   fName?: string;
@@ -16,10 +11,8 @@ interface SignUpBody {
   password?: string;
   institutionName?: string;
   institutionCountry?: string;
+  institutionalEmail?: string;
 }
-
-const PERSONAL_DOMAIN_MESSAGE =
-  "Please use your hospital, university, or medical institution email address.";
 
 function authSignUpErrorMessage(error: {
   message?: string;
@@ -64,24 +57,26 @@ export async function POST(request: Request) {
   const password = body.password ?? "";
   const institutionName = body.institutionName?.trim() ?? "";
   const institutionCountry = body.institutionCountry?.trim() ?? "";
+  const institutionalEmail = body.institutionalEmail
+    ? normalizeEmail(body.institutionalEmail)
+    : "";
 
   // 1. Validate required fields.
-  if (
-    !fName ||
-    !lName ||
-    !email ||
-    !password ||
-    !institutionName ||
-    !institutionCountry
-  ) {
+  if (!fName || !lName || !email || !password) {
     return NextResponse.json(
-      { error: "All fields are required." },
+      { error: "Full name, email, and password are required." },
       { status: 400 }
     );
   }
   if (!isValidEmail(email)) {
     return NextResponse.json(
       { error: "Please enter a valid email address." },
+      { status: 400 }
+    );
+  }
+  if (institutionalEmail && !isValidEmail(institutionalEmail)) {
+    return NextResponse.json(
+      { error: "Please enter a valid institutional email, or leave it blank." },
       { status: 400 }
     );
   }
@@ -92,7 +87,6 @@ export async function POST(request: Request) {
     );
   }
 
-  // 2. Domain policy.
   const domain = getEmailDomain(email);
   if (!domain) {
     return NextResponse.json(
@@ -100,21 +94,9 @@ export async function POST(request: Request) {
       { status: 400 }
     );
   }
-  if (!allowPersonalEmailSignup && isPersonalEmailDomain(domain)) {
-    return NextResponse.json({ error: PERSONAL_DOMAIN_MESSAGE }, { status: 400 });
-  }
 
   const admin = createAdminClient();
-
-  // 3. Check the learned trusted-domain dictionary.
-  const { data: trusted } = await admin
-    .from("allowed_email_domains")
-    .select("domain, auto_approve")
-    .eq("domain", domain)
-    .maybeSingle();
-
-  const membershipStatus =
-    trusted && trusted.auto_approve ? "approved" : "pending";
+  const membershipStatus = "approved";
 
   // 4. Create the Supabase Auth user (sends a verification email).
   const supabase = await createClient();
@@ -154,7 +136,7 @@ export async function POST(request: Request) {
   }
 
   // 5. Create the profile row with the service-role client (bypasses RLS).
-  const { error: profileError } = await admin.from("profiles").insert({
+  const profileRow = {
     id: userId,
     fName,
     lName,
@@ -162,9 +144,18 @@ export async function POST(request: Request) {
     email_domain: domain,
     institution_name: institutionName,
     institution_country: institutionCountry,
+    institutional_email: institutionalEmail || null,
     membership_status: membershipStatus,
     role: "member",
-  });
+  };
+
+  let { error: profileError } = await admin.from("profiles").insert(profileRow);
+
+  // Column may not exist until 0002 is applied; retry without it.
+  if (profileError?.code === "42703") {
+    const { institutional_email: _ignored, ...legacyRow } = profileRow;
+    ({ error: profileError } = await admin.from("profiles").insert(legacyRow));
+  }
 
   // 6. Recovery: if profile creation fails, delete the just-created Auth user.
   if (profileError) {
