@@ -59,7 +59,7 @@ export default async function HomePage() {
                   className={cn(buttonVariants({ variant: "outline", size: "lg" }))}
                 >
                   <Lock className="size-5" />
-                  Request Member Access
+                  Sign Up
                 </Link>
               )}
             </div>
@@ -156,7 +156,7 @@ export default async function HomePage() {
         <div className="mx-auto max-w-6xl px-4 py-16 sm:px-6">
           <div className="mb-10 text-center">
             <h2 className="text-2xl font-bold tracking-tight text-navy">
-              Why request member access?
+              Why Sign Up?
             </h2>
             <p className="mt-2 text-muted-foreground">
               Membership is for verified medical and medical-adjacent learners.
@@ -169,32 +169,11 @@ export default async function HomePage() {
               body="Access the entire library of radiology lessons and cases across every subspecialty."
             />
             <Feature
-              icon={<ShieldCheck className="size-5" />}
-              title="Verified medical community"
-              body="Access is limited to hospital, university, and health-system email addresses reviewed by an admin."
-            />
-            <Feature
               icon={<Link2 className="size-5" />}
               title="Watch after login"
               body="Member-only lessons play on the site after an access check. You can also open them on YouTube."
             />
           </div>
-
-          {!viewer.user && (
-            <div className="mt-10 flex flex-col items-center gap-4 rounded-2xl border border-border bg-accent/40 p-8 text-center">
-              <h3 className="text-lg font-semibold text-navy">
-                Have a medical institution email?
-              </h3>
-              <p className="max-w-xl text-sm text-muted-foreground">
-                Use your hospital, university, medical school, or health-system
-                email address to request access. Personal email addresses such
-                as Gmail, Yahoo, Outlook, and iCloud are not eligible.
-              </p>
-              <Link href="/sign-up" className={buttonVariants({ size: "lg" })}>
-                Request Member Access
-              </Link>
-            </div>
-          )}
         </div>
       </section>
     </div>

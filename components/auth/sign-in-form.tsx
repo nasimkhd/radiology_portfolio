@@ -172,7 +172,7 @@ export function SignInForm({
       <p className="text-center text-sm text-muted-foreground">
         Need access?{" "}
         <Link href="/sign-up" className="font-semibold text-primary hover:underline">
-          Request member access
+          Sign Up
         </Link>
       </p>
     </form>

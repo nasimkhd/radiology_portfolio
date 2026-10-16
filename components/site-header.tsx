@@ -63,7 +63,7 @@ export async function SiteHeader() {
                 className={buttonVariants({ variant: "primary", className: "text-base" })}
               >
                 <CircleUserRound className="size-4" />
-                Request Access
+                Sign Up
               </Link>
             </div>
           )}

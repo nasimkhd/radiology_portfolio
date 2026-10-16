@@ -27,7 +27,7 @@ export default async function VideosPage() {
         <p className="mt-2 max-w-2xl text-muted-foreground">
           {viewer.isApprovedMember
             ? "You have full access to the curated radiology catalog. Every lesson plays right here after a quick access check."
-            : "Selected preview lessons are free to watch on the site. The full library is available to verified medical members."}
+            : "Selected preview lessons are free to watch on the site. The full library is available to verified members."}
         </p>
       </header>
 
@@ -47,12 +47,11 @@ export default async function VideosPage() {
         {!viewer.isApprovedMember && (
           <div className="mb-6 rounded-xl border border-border bg-accent/40 p-5">
             <p className="text-sm leading-relaxed text-accent-foreground">
-              Members-only lessons. Sign up with a hospital, university, or
-              medical institution email to access the full library.
+              Members-only lessons. Sign up to access the full library.
             </p>
             <div className="mt-4 flex flex-col gap-2 sm:flex-row">
               <Link href="/sign-up" className={buttonVariants({ size: "sm" })}>
-                Request member access
+                Sign Up
               </Link>
               <Link
                 href="/sign-in"

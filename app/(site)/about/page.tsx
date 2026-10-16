@@ -30,27 +30,24 @@ export default function AboutPage() {
         />
         <Section
           icon={<GraduationCap className="size-5" />}
-          title="For medical learners"
-          body="The audience is radiology residents, medical students, physicians, allied health professionals, and researchers or institutional staff with a medical organization email address."
+          title="For medical learners and Radiology Enthusiasts"
+          body="Our educational content is designed for medical students, radiology residents, physicians, professionals, researchers, and anyone interested in learning more about radiology. "
         />
         <Section
           icon={<ShieldCheck className="size-5" />}
           title="Verified membership"
-          body="Public visitors can preview selected lessons and see what the full library offers. The complete catalog is reserved for members who sign up with an institutional medical email, are approved, and verify their email address."
+          body="Public visitors can preview selected lessons, watch publicly available videos, and browse the topics coovered in our full library. However, access to our complete catalog of educational videos is reserved for members who sign up and verify their email addresses."
         />
       </div>
+
 
       <div className="mt-12 rounded-2xl border border-border bg-accent/40 p-8 text-center">
         <h2 className="text-xl font-semibold text-navy">
           Ready to access the full library?
         </h2>
-        <p className="mx-auto mt-2 max-w-md text-sm text-muted-foreground">
-          Request member access with your hospital, university, or health-system
-          email address.
-        </p>
         <div className="mt-6 flex flex-col justify-center gap-3 sm:flex-row">
           <Link href="/sign-up" className={buttonVariants({ size: "lg" })}>
-            Request Member Access
+            Sign Up
           </Link>
           <Link
             href="/videos"

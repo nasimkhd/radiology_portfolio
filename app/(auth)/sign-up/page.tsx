@@ -16,9 +16,9 @@ import { getViewerContext } from "@/lib/auth";
 import { allowPersonalEmailSignup } from "@/lib/env";
 
 export const metadata: Metadata = {
-  title: "Request Member Access",
+  title: "Sign Up",
   description:
-    "Request access to the full radiology video library with your institutional medical email.",
+    "Sign Up to the full radiology video library with your institutional medical email.",
 };
 
 export default async function SignUpPage() {
@@ -43,11 +43,11 @@ export default async function SignUpPage() {
 
           <div className="relative mx-auto max-w-md -translate-y-10">
             <h1 className="font-serif text-4xl font-bold leading-tight text-navy">
-              Request Member Access
+              Unlock Free Access to Exclusive Radiology Content
             </h1>
             <p className="mt-4 text-lg leading-relaxed text-muted-foreground">  
-              Use your hospital, university, medical school, or health-system
-              email address. Personal email addresses are not eligible.
+              Want to explore our full library of radiology videos and access exclusive educational content? 
+              Sign up for free and start learning today.
             </p>
 
             <ul className="mt-10 space-y-6">
@@ -76,7 +76,7 @@ export default async function SignUpPage() {
             <div className="mb-6 lg:hidden">
               <h1 className="flex items-center gap-2 font-serif text-2xl font-bold text-navy">
                 <Lock className="size-5 text-primary" />
-                Request Member Access
+                Sign Up
               </h1>
               <p className="mt-1 text-sm text-muted-foreground">
                 Use your institutional medical email address.

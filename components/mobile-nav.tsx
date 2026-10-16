@@ -149,7 +149,7 @@ export function MobileNav({
                   className: "w-full",
                 })}
               >
-                Request Access
+                Sign Up
               </Link>
             </div>
           )}

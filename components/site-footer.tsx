@@ -28,7 +28,7 @@ export function SiteFooter() {
               About
             </Link>
             <Link href="/sign-up" className="text-muted-foreground hover:text-primary">
-              Request member access
+              Sign Up
             </Link>
           </nav>
         </div>

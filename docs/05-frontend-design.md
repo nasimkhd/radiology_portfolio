@@ -82,7 +82,7 @@ Hero content should include:
 - Clear headline, such as "Radiology Video Lessons for Medical Learners."
 - Short subheading explaining that selected previews are public and the full library is for verified medical members.
 - Primary CTA: "Browse Preview Videos."
-- Secondary CTA: "Request Member Access."
+- Secondary CTA: "Sign Up."
 
 ## Videos Page
 

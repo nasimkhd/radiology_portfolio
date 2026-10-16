@@ -20,7 +20,7 @@ export const metadata: Metadata = {
     template: "%s · Radio From Scratch",
   },
   description:
-    "Curated radiology video lessons for medical learners. Public previews for everyone; the full library for verified medical members.",
+    "Curated radiology video lessons for medical learners. Public previews for everyone; the full library for verified members.",
 };
 
 export default function RootLayout({
