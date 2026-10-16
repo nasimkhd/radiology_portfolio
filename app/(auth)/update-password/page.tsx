@@ -84,7 +84,7 @@ export default function UpdatePasswordPage() {
       const { error: updateError } = await supabase.auth.updateUser({ password });
       if (updateError) {
         setError(
-          "Could not update your password. The reset link may have expired."
+          "Could not update your password. Please try again."
         );
         return;
       }
